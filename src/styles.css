@@ -1,0 +1,532 @@
+:root {
+  font-family: "Segoe UI", "Avenir Next", system-ui, sans-serif;
+  color: #f5f1e8;
+  background:
+    radial-gradient(circle at top, rgba(122, 151, 138, 0.24), transparent 38%),
+    linear-gradient(180deg, #17211e 0%, #0b100f 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+.app-shell {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background: #09100f;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(6, 11, 10, 0.2), rgba(6, 11, 10, 0.55)),
+    radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.03),
+      rgba(5, 9, 8, 0.22) 72%
+    ),
+    var(--backdrop-image) center / cover no-repeat;
+  filter: blur(24px) saturate(0.99) brightness(0.55);
+  opacity: 0.85;
+  transform: scale(1.12);
+}
+
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at center,
+      transparent 20%,
+      rgba(4, 8, 7, 0.4) 70%,
+      rgba(4, 8, 7, 0.72) 100%
+    ),
+    linear-gradient(180deg, rgba(7, 12, 11, 0.12), rgba(7, 12, 11, 0.4));
+}
+
+.player-card {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(280px, 42vw) minmax(280px, 1fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+  min-height: 100vh;
+  padding: clamp(2rem, 5vw, 4.5rem);
+}
+
+.artwork-wrap {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 680px);
+}
+
+.artwork-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 32px;
+  background:
+    radial-gradient(
+      circle at center,
+      transparent 52%,
+      rgba(9, 16, 15, 0.08) 74%,
+      rgba(9, 16, 15, 0.28) 100%
+    ),
+    linear-gradient(180deg, rgba(8, 14, 13, 0.02), rgba(8, 14, 13, 0.14));
+  pointer-events: none;
+}
+
+.artwork {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 32px;
+  box-shadow:
+    0 40px 80px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.player-content {
+  max-width: 760px;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  color: rgba(245, 241, 232, 0.64);
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.track-title {
+  margin: 0;
+  font-size: clamp(2.8rem, 5.6vw, 5.8rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.artist-name {
+  margin: 1.25rem 0 0;
+  color: #f5f1e8;
+  font-size: clamp(1.5rem, 2.8vw, 2.6rem);
+  font-weight: 500;
+}
+
+.album-name {
+  margin: 0.75rem 0 0;
+  color: rgba(245, 241, 232, 0.62);
+  font-size: clamp(1.1rem, 1.8vw, 1.45rem);
+}
+
+.status-message {
+  margin: 1rem 0 0;
+  color: rgba(245, 241, 232, 0.72);
+  font-size: 1rem;
+}
+
+.progress-section {
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+}
+
+.progress-track {
+  width: 100%;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(245, 241, 232, 0.08);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(245, 241, 232, 0.72) 0%, rgba(216, 210, 196, 0.58) 100%);
+}
+
+.time-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  color: rgba(245, 241, 232, 0.6);
+  font-size: 1rem;
+}
+
+.playing-next {
+  margin-top: 1rem;
+  font-size: 0.78rem;
+  color: rgba(245, 241, 232, 0.38);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.controls-wrap {
+  transition: opacity 200ms ease;
+}
+
+.controls-wrap--hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 700ms ease;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+
+.control-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(245, 241, 232, 0.5);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease,
+    opacity 140ms ease;
+}
+
+.control-button:hover {
+  background: rgba(255, 255, 255, 0.035);
+  color: rgba(245, 241, 232, 0.72);
+}
+
+.control-button:active {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(245, 241, 232, 0.9);
+}
+
+.control-button:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.control-button:disabled:hover {
+  background: transparent;
+  color: rgba(245, 241, 232, 0.5);
+}
+
+.control-button:focus-visible {
+  outline: 2px solid rgba(245, 241, 232, 0.55);
+  outline-offset: 4px;
+}
+
+.control-icon {
+  display: block;
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+.control-icon-secondary {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.control-button-secondary {
+  width: 3.75rem;
+  height: 3.75rem;
+  background: rgba(245, 241, 232, 0.05);
+}
+
+.control-button-secondary:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.control-button-secondary:active {
+  background: rgba(255, 255, 255, 0.13);
+}
+
+.control-button-primary {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 999px;
+  background: rgba(245, 241, 232, 0.88);
+  color: rgba(12, 17, 16, 0.92);
+}
+
+.control-button-primary:hover {
+  background: rgba(245, 241, 232, 0.96);
+  color: rgba(12, 17, 16, 0.98);
+}
+
+.control-button-primary:active {
+  background: rgba(245, 241, 232, 1);
+  color: rgba(12, 17, 16, 1);
+}
+
+.control-icon-primary {
+  width: 1.35rem;
+  height: 1.35rem;
+}
+
+.settings-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.875rem;
+  height: 1.875rem;
+  margin-top: 0.875rem;
+  margin-left: auto;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(245, 241, 232, 0.28);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.settings-button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(245, 241, 232, 0.6);
+}
+
+.settings-button:active {
+  background: rgba(255, 255, 255, 0.09);
+  color: rgba(245, 241, 232, 0.8);
+}
+
+.settings-button:focus-visible {
+  outline: 2px solid rgba(245, 241, 232, 0.55);
+  outline-offset: 4px;
+}
+
+/* ── Modals ───────────────────────────────────────────── */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 13, 12, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1.5rem;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 360px;
+  background: rgba(22, 29, 27, 0.97);
+  border: 1px solid rgba(245, 241, 232, 0.09);
+  border-radius: 1.1rem;
+  padding: 2rem;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.modal-title {
+  margin: 0 0 0.4rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: rgba(245, 241, 232, 0.92);
+}
+
+.modal-header .modal-title {
+  margin-bottom: 0;
+}
+
+.modal-description {
+  margin: 0 0 1.5rem;
+  font-size: 0.85rem;
+  color: rgba(245, 241, 232, 0.45);
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  background: rgba(245, 241, 232, 0.05);
+  border: 1px solid rgba(245, 241, 232, 0.12);
+  border-radius: 0.55rem;
+  color: rgba(245, 241, 232, 0.9);
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 140ms ease;
+}
+
+.modal-input:focus {
+  border-color: rgba(245, 241, 232, 0.32);
+}
+
+.modal-input::placeholder {
+  color: rgba(245, 241, 232, 0.28);
+}
+
+.modal-error {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(255, 110, 110, 0.9);
+}
+
+.modal-success {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(100, 215, 140, 0.9);
+}
+
+.modal-submit {
+  padding: 0.7rem 1.25rem;
+  border: 0;
+  border-radius: 0.55rem;
+  background: rgba(245, 241, 232, 0.88);
+  color: rgba(12, 17, 16, 0.92);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 140ms ease,
+    opacity 140ms ease;
+}
+
+.modal-submit:hover {
+  background: rgba(245, 241, 232, 0.97);
+}
+
+.modal-submit:active {
+  background: rgba(245, 241, 232, 1);
+}
+
+.modal-submit:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.modal-submit:disabled:hover {
+  background: rgba(245, 241, 232, 0.88);
+}
+
+.modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(245, 241, 232, 0.45);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(245, 241, 232, 0.8);
+}
+
+.modal-close:active {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(245, 241, 232, 0.95);
+}
+
+.modal-close:focus-visible {
+  outline: 2px solid rgba(245, 241, 232, 0.55);
+  outline-offset: 4px;
+}
+
+@media (max-width: 980px) {
+  .player-card {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-content: center;
+  }
+
+  .artwork-wrap {
+    width: min(100%, 520px);
+  }
+
+  .player-content {
+    max-width: none;
+    text-align: center;
+  }
+
+  .controls {
+    justify-content: center;
+  }
+
+  .settings-button {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .player-card {
+    padding: 1.5rem;
+  }
+
+  .control-button {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .control-button-secondary {
+    width: 3.75rem;
+    height: 3.75rem;
+  }
+
+  .control-button-primary {
+    width: 4rem;
+    height: 4rem;
+  }
+}
