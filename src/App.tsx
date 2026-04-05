@@ -22,16 +22,21 @@ export default function App() {
     previousTrack,
     nextTrack,
   } = useNowPlaying();
+  const albumArtUrl = nowPlaying.albumArtUrl ?? FALLBACK_ALBUM_ART_URL;
 
   return (
     <main className="app-shell">
-      <div className="backdrop" aria-hidden="true" />
+      <div
+        className="backdrop"
+        style={{ "--backdrop-image": `url("${albumArtUrl}")` } as React.CSSProperties}
+        aria-hidden="true"
+      />
 
       <section className="player-card" aria-label="Now playing">
         <div className="artwork-wrap">
           <img
             className="artwork"
-            src={nowPlaying.albumArtUrl ?? FALLBACK_ALBUM_ART_URL}
+            src={albumArtUrl}
             alt={`${nowPlaying.album} album artwork`}
           />
         </div>

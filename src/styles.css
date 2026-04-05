@@ -36,17 +36,37 @@ select {
   position: relative;
   min-height: 100vh;
   overflow: hidden;
+  background: #09100f;
 }
 
 .backdrop {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 20% 20%, rgba(243, 238, 229, 0.09), transparent 28%),
-    radial-gradient(circle at 80% 25%, rgba(85, 111, 102, 0.22), transparent 22%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
-  filter: blur(10px);
-  transform: scale(1.03);
+    linear-gradient(180deg, rgba(6, 11, 10, 0.2), rgba(6, 11, 10, 0.55)),
+    radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.03),
+      rgba(5, 9, 8, 0.22) 72%
+    ),
+    var(--backdrop-image) center / cover no-repeat;
+  filter: blur(24px) saturate(0.99) brightness(0.55);
+  opacity: 0.85;
+  transform: scale(1.12);
+}
+
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      circle at center,
+      transparent 20%,
+      rgba(4, 8, 7, 0.4) 70%,
+      rgba(4, 8, 7, 0.72) 100%
+    ),
+    linear-gradient(180deg, rgba(7, 12, 11, 0.12), rgba(7, 12, 11, 0.4));
 }
 
 .player-card {
@@ -61,8 +81,25 @@ select {
 }
 
 .artwork-wrap {
+  position: relative;
   justify-self: center;
   width: min(100%, 680px);
+}
+
+.artwork-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 32px;
+  background:
+    radial-gradient(
+      circle at center,
+      transparent 48%,
+      rgba(9, 16, 15, 0.12) 68%,
+      rgba(9, 16, 15, 0.5) 100%
+    ),
+    linear-gradient(180deg, rgba(8, 14, 13, 0.04), rgba(8, 14, 13, 0.22));
+  pointer-events: none;
 }
 
 .artwork {
