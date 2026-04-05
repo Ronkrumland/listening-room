@@ -1,5 +1,19 @@
 const API_BASE_URL = import.meta.env.VITE_TRACK_CONTEXT_API_BASE_URL;
-const API_BEARER_TOKEN = import.meta.env.VITE_TRACK_CONTEXT_API_BEARER_TOKEN;
+const TOKEN_STORAGE_KEY = "listening-room-token";
+
+export function getStoredToken(): string | null {
+  return localStorage.getItem(TOKEN_STORAGE_KEY);
+}
+
+function saveToken(token: string): void {
+  localStorage.setItem(TOKEN_STORAGE_KEY, token);
+}
+
+export async function validateAndSaveToken(token: string): Promise<void> {
+  // Validate before persisting — only saves if the request succeeds.
+  await request<NowPlayingResponse>("/display/now-playing", undefined, token);
+  saveToken(token);
+}
 
 type QueuedTrack = {
   trackTitle: string;
@@ -33,20 +47,17 @@ function getRequiredEnvValue(value: string | undefined, name: string) {
   return value;
 }
 
-async function request<T>(path: string, init?: RequestInit) {
+async function request<T>(path: string, init?: RequestInit, tokenOverride?: string) {
   const baseUrl = getRequiredEnvValue(
     API_BASE_URL,
     "VITE_TRACK_CONTEXT_API_BASE_URL",
   );
-  const bearerToken = getRequiredEnvValue(
-    API_BEARER_TOKEN,
-    "VITE_TRACK_CONTEXT_API_BEARER_TOKEN",
-  );
+  const token = tokenOverride ?? getStoredToken();
 
   const response = await fetch(`${baseUrl.replace(/\/$/, "")}${path}`, {
     ...init,
     headers: {
-      Authorization: `Bearer ${bearerToken}`,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(init?.headers ?? {}),
     },
   });

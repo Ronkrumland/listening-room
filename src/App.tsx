@@ -1,6 +1,11 @@
+import { Settings } from "lucide-react";
+import { useState } from "react";
+import { AuthModal } from "./components/AuthModal";
 import { PlaybackControls } from "./components/PlaybackControls";
 import { ProgressBar } from "./components/ProgressBar";
+import { SettingsModal } from "./components/SettingsModal";
 import { useControlsVisible } from "./hooks/useControlsVisible";
+import { getStoredToken } from "./api/trackContextApi";
 import { useNowPlaying } from "./now-playing/useNowPlaying";
 
 const FALLBACK_ALBUM_ART_URL = "/mock-album-art.svg";
@@ -13,7 +18,7 @@ function formatTime(ms: number) {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
-export default function App() {
+function Player() {
   const {
     nowPlaying,
     loading,
@@ -24,7 +29,9 @@ export default function App() {
     nextTrack,
   } = useNowPlaying();
   const controlsVisible = useControlsVisible();
+  const [showSettings, setShowSettings] = useState(false);
   const albumArtUrl = nowPlaying.albumArtUrl ?? FALLBACK_ALBUM_ART_URL;
+  const fadeClass = controlsVisible ? "controls-wrap" : "controls-wrap controls-wrap--hidden";
 
   return (
     <main className="app-shell">
@@ -68,7 +75,7 @@ export default function App() {
             </p>
           )}
 
-          <div className={controlsVisible ? "controls-wrap" : "controls-wrap controls-wrap--hidden"}>
+          <div className={fadeClass}>
             <PlaybackControls
               isPlaying={nowPlaying.isPlaying}
               disabled={!nowPlaying.isControllable || transportPending}
@@ -76,9 +83,29 @@ export default function App() {
               onTogglePlayback={togglePlayback}
               onNext={nextTrack}
             />
+            <button
+              className="settings-button"
+              type="button"
+              onClick={() => setShowSettings(true)}
+              aria-label="Settings"
+            >
+              <Settings size={15} aria-hidden="true" />
+            </button>
           </div>
         </div>
       </section>
+
+      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
     </main>
   );
+}
+
+export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(() => getStoredToken() !== null);
+
+  if (!isAuthenticated) {
+    return <AuthModal onAuthenticated={() => setIsAuthenticated(true)} />;
+  }
+
+  return <Player />;
 }
