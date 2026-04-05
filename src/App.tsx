@@ -62,6 +62,12 @@ export default function App() {
             </div>
           </div>
 
+          {nowPlaying.playingNext && (
+            <p className="playing-next">
+              Next: {nowPlaying.playingNext.title} — {nowPlaying.playingNext.artist}
+            </p>
+          )}
+
           <div className={controlsVisible ? "controls-wrap" : "controls-wrap controls-wrap--hidden"}>
             <PlaybackControls
               isPlaying={nowPlaying.isPlaying}

@@ -14,6 +14,7 @@ const FALLBACK_NOW_PLAYING: NowPlayingTrack = {
   lastUpdatedAt: "",
   progressMs: 0,
   durationMs: 0,
+  playingNext: null,
 };
 
 export function useNowPlaying() {

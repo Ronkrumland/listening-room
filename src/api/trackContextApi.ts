@@ -74,6 +74,7 @@ export type DisplayNowPlaying = {
   durationMs: number;
   isControllable: boolean;
   lastUpdatedAt: string;
+  playingNext: { title: string; artist: string } | null;
 };
 
 function mapNowPlayingResponse(dto: NowPlayingResponse): DisplayNowPlaying {
@@ -87,6 +88,9 @@ function mapNowPlayingResponse(dto: NowPlayingResponse): DisplayNowPlaying {
     durationMs: Math.max(0, dto.durationSeconds * 1000),
     isControllable: dto.isControllable,
     lastUpdatedAt: dto.lastUpdatedAt,
+    playingNext: dto.playingNext
+      ? { title: dto.playingNext.trackTitle, artist: dto.playingNext.artistName }
+      : null,
   };
 }
 

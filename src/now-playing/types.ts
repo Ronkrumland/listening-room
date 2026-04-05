@@ -8,4 +8,5 @@ export type NowPlayingTrack = {
   lastUpdatedAt: string;
   progressMs: number;
   durationMs: number;
+  playingNext: { title: string; artist: string } | null;
 };

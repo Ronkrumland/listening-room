@@ -177,6 +177,15 @@ select {
   font-size: 1rem;
 }
 
+.playing-next {
+  margin-top: 1rem;
+  font-size: 0.78rem;
+  color: rgba(245, 241, 232, 0.38);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .controls-wrap {
   transition: opacity 200ms ease;
 }
