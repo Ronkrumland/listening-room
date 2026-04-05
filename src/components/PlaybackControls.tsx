@@ -1,3 +1,5 @@
+import { Pause, Play, SkipBack, SkipForward } from "lucide-react";
+
 type PlaybackControlsProps = {
   isPlaying: boolean;
   disabled?: boolean;
@@ -22,7 +24,7 @@ export function PlaybackControls({
         aria-label="Previous track"
         disabled={disabled}
       >
-        <span aria-hidden="true">|&lt;</span>
+        <SkipBack className="control-icon control-icon-secondary" aria-hidden="true" />
       </button>
       <button
         className="control-button control-button-primary"
@@ -31,7 +33,9 @@ export function PlaybackControls({
         aria-label={isPlaying ? "Pause playback" : "Play playback"}
         disabled={disabled}
       >
-        <span aria-hidden="true">{isPlaying ? "||" : ">"}</span>
+        {isPlaying
+          ? <Pause className="control-icon control-icon-primary" aria-hidden="true" />
+          : <Play className="control-icon control-icon-primary" aria-hidden="true" />}
       </button>
       <button
         className="control-button"
@@ -40,7 +44,7 @@ export function PlaybackControls({
         aria-label="Next track"
         disabled={disabled}
       >
-        <span aria-hidden="true">&gt;|</span>
+        <SkipForward className="control-icon control-icon-secondary" aria-hidden="true" />
       </button>
     </div>
   );
