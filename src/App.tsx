@@ -1,5 +1,6 @@
 import { PlaybackControls } from "./components/PlaybackControls";
 import { ProgressBar } from "./components/ProgressBar";
+import { useControlsVisible } from "./hooks/useControlsVisible";
 import { useNowPlaying } from "./now-playing/useNowPlaying";
 
 const FALLBACK_ALBUM_ART_URL = "/mock-album-art.svg";
@@ -22,6 +23,7 @@ export default function App() {
     previousTrack,
     nextTrack,
   } = useNowPlaying();
+  const controlsVisible = useControlsVisible();
   const albumArtUrl = nowPlaying.albumArtUrl ?? FALLBACK_ALBUM_ART_URL;
 
   return (
@@ -60,13 +62,15 @@ export default function App() {
             </div>
           </div>
 
-          <PlaybackControls
-            isPlaying={nowPlaying.isPlaying}
-            disabled={!nowPlaying.isControllable || transportPending}
-            onPrevious={previousTrack}
-            onTogglePlayback={togglePlayback}
-            onNext={nextTrack}
-          />
+          <div className={controlsVisible ? "controls-wrap" : "controls-wrap controls-wrap--hidden"}>
+            <PlaybackControls
+              isPlaying={nowPlaying.isPlaying}
+              disabled={!nowPlaying.isControllable || transportPending}
+              onPrevious={previousTrack}
+              onTogglePlayback={togglePlayback}
+              onNext={nextTrack}
+            />
+          </div>
         </div>
       </section>
     </main>

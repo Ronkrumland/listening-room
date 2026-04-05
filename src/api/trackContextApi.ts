@@ -1,7 +1,16 @@
 const API_BASE_URL = import.meta.env.VITE_TRACK_CONTEXT_API_BASE_URL;
 const API_BEARER_TOKEN = import.meta.env.VITE_TRACK_CONTEXT_API_BEARER_TOKEN;
 
-type NowPlayingResponseDto = {
+type QueuedTrack = {
+  trackTitle: string;
+  artistName: string;
+  albumName: string;
+  albumArtUrl: string;
+  durationSeconds: number;
+  trackUrl: string | null;
+};
+
+type NowPlayingResponse = {
   trackTitle: string;
   artistName: string;
   albumName: string;
@@ -13,6 +22,7 @@ type NowPlayingResponseDto = {
   isControllable: boolean;
   trackUrl: string | null;
   lastUpdatedAt: string;
+  playingNext: QueuedTrack | null;
 };
 
 function getRequiredEnvValue(value: string | undefined, name: string) {
@@ -24,7 +34,10 @@ function getRequiredEnvValue(value: string | undefined, name: string) {
 }
 
 async function request<T>(path: string, init?: RequestInit) {
-  const baseUrl = getRequiredEnvValue(API_BASE_URL, "VITE_TRACK_CONTEXT_API_BASE_URL");
+  const baseUrl = getRequiredEnvValue(
+    API_BASE_URL,
+    "VITE_TRACK_CONTEXT_API_BASE_URL",
+  );
   const bearerToken = getRequiredEnvValue(
     API_BEARER_TOKEN,
     "VITE_TRACK_CONTEXT_API_BEARER_TOKEN",
@@ -39,7 +52,9 @@ async function request<T>(path: string, init?: RequestInit) {
   });
 
   if (!response.ok) {
-    throw new Error(`Track Context request failed with status ${response.status}`);
+    throw new Error(
+      `Track Context request failed with status ${response.status}`,
+    );
   }
 
   if (response.status === 204) {
@@ -61,7 +76,7 @@ export type DisplayNowPlaying = {
   lastUpdatedAt: string;
 };
 
-function mapNowPlayingResponse(dto: NowPlayingResponseDto): DisplayNowPlaying {
+function mapNowPlayingResponse(dto: NowPlayingResponse): DisplayNowPlaying {
   return {
     title: dto.trackTitle,
     artist: dto.artistName,
@@ -77,7 +92,7 @@ function mapNowPlayingResponse(dto: NowPlayingResponseDto): DisplayNowPlaying {
 
 export const trackContextApi = {
   async getNowPlaying() {
-    const response = await request<NowPlayingResponseDto>("/display/now-playing");
+    const response = await request<NowPlayingResponse>("/display/now-playing");
     return mapNowPlayingResponse(response);
   },
   play() {
