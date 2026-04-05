@@ -240,6 +240,20 @@ select {
   height: 1.25rem;
 }
 
+.control-button-secondary {
+  width: 3.75rem;
+  height: 3.75rem;
+  background: rgba(245, 241, 232, 0.05);
+}
+
+.control-button-secondary:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.control-button-secondary:active {
+  background: rgba(255, 255, 255, 0.13);
+}
+
 .control-button-primary {
   width: 4rem;
   height: 4rem;
@@ -292,6 +306,11 @@ select {
   .control-button {
     width: 3.5rem;
     height: 3.5rem;
+  }
+
+  .control-button-secondary {
+    width: 3.75rem;
+    height: 3.75rem;
   }
 
   .control-button-primary {

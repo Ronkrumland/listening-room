@@ -18,7 +18,7 @@ export function PlaybackControls({
   return (
     <div className="controls" aria-label="Playback controls">
       <button
-        className="control-button"
+        className="control-button control-button-secondary"
         type="button"
         onClick={onPrevious}
         aria-label="Previous track"
@@ -38,7 +38,7 @@ export function PlaybackControls({
           : <Play className="control-icon control-icon-primary" aria-hidden="true" />}
       </button>
       <button
-        className="control-button"
+        className="control-button control-button-secondary"
         type="button"
         onClick={onNext}
         aria-label="Next track"
