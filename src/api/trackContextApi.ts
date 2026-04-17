@@ -1,5 +1,26 @@
 const API_BASE_URL = import.meta.env.VITE_TRACK_CONTEXT_API_BASE_URL;
 const TOKEN_STORAGE_KEY = "listening-room-token";
+export const SPOTIFY_AUTH_REQUIRED_CODE = "spotify_auth_required";
+
+type ErrorResponse = {
+  code?: string;
+  error?: string;
+};
+
+type SpotifyLoginUrlResponse = {
+  url: string;
+};
+
+export class TrackContextApiError extends Error {
+  constructor(
+    message: string,
+    public readonly status: number,
+    public readonly code?: string,
+  ) {
+    super(message);
+    this.name = "TrackContextApiError";
+  }
+}
 
 export function getStoredToken(): string | null {
   return localStorage.getItem(TOKEN_STORAGE_KEY);
@@ -10,8 +31,8 @@ function saveToken(token: string): void {
 }
 
 export async function validateAndSaveToken(token: string): Promise<void> {
-  // Validate before persisting — only saves if the request succeeds.
-  await request<NowPlayingResponse>("/display/now-playing", undefined, token);
+  // Validate the app token without depending on Spotify playback state.
+  await request<{ status: string }>("/auth/check", undefined, token);
   saveToken(token);
 }
 
@@ -63,8 +84,18 @@ async function request<T>(path: string, init?: RequestInit, tokenOverride?: stri
   });
 
   if (!response.ok) {
-    throw new Error(
-      `Track Context request failed with status ${response.status}`,
+    let body: ErrorResponse | null = null;
+
+    try {
+      body = (await response.json()) as ErrorResponse;
+    } catch {
+      body = null;
+    }
+
+    throw new TrackContextApiError(
+      body?.error ?? `Track Context request failed with status ${response.status}`,
+      response.status,
+      body?.code,
     );
   }
 
@@ -109,6 +140,12 @@ export const trackContextApi = {
   async getNowPlaying() {
     const response = await request<NowPlayingResponse>("/display/now-playing");
     return mapNowPlayingResponse(response);
+  },
+  async getSpotifyLoginUrl() {
+    const response = await request<SpotifyLoginUrlResponse>(
+      "/auth/spotify/login-url",
+    );
+    return response.url;
   },
   play() {
     return request<void>("/display/play", { method: "POST" });

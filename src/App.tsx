@@ -23,7 +23,10 @@ function Player() {
     nowPlaying,
     loading,
     error,
+    spotifyAuthRequired,
+    spotifyAuthPending,
     transportPending,
+    connectSpotify,
     togglePlayback,
     previousTrack,
     nextTrack,
@@ -59,6 +62,16 @@ function Player() {
             <p className="status-message" role={error ? "alert" : "status"}>
               {loading ? "Connecting to track-context..." : error}
             </p>
+          )}
+          {spotifyAuthRequired && (
+            <button
+              className="spotify-login-button"
+              type="button"
+              onClick={() => void connectSpotify()}
+              disabled={spotifyAuthPending}
+            >
+              {spotifyAuthPending ? "Opening Spotify..." : "Connect Spotify"}
+            </button>
           )}
 
           <div className="progress-section">

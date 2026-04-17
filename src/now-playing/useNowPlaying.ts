@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { trackContextApi } from "../api/trackContextApi";
+import {
+  SPOTIFY_AUTH_REQUIRED_CODE,
+  TrackContextApiError,
+  trackContextApi,
+} from "../api/trackContextApi";
 import { NowPlayingTrack } from "./types";
 
 const POLL_INTERVAL_MS = 5000;
@@ -21,12 +25,45 @@ export function useNowPlaying() {
   const [nowPlaying, setNowPlaying] = useState<NowPlayingTrack | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [spotifyAuthRequired, setSpotifyAuthRequired] = useState(false);
+  const [spotifyAuthPending, setSpotifyAuthPending] = useState(false);
   const [transportPending, setTransportPending] = useState(false);
+
+  function handleRequestError(nextError: unknown, fallbackMessage: string) {
+    if (
+      nextError instanceof TrackContextApiError &&
+      nextError.code === SPOTIFY_AUTH_REQUIRED_CODE
+    ) {
+      setSpotifyAuthRequired(true);
+      setError("Spotify needs to be connected.");
+      return;
+    }
+
+    setError(nextError instanceof Error ? nextError.message : fallbackMessage);
+  }
 
   const refreshNowPlaying = async () => {
     const nextNowPlaying = await trackContextApi.getNowPlaying();
     setNowPlaying(nextNowPlaying);
     setError(null);
+    setSpotifyAuthRequired(false);
+  };
+
+  const connectSpotify = async () => {
+    if (spotifyAuthPending) {
+      return;
+    }
+
+    setSpotifyAuthPending(true);
+    setError(null);
+
+    try {
+      const url = await trackContextApi.getSpotifyLoginUrl();
+      window.location.assign(url);
+    } catch (nextError) {
+      handleRequestError(nextError, "Failed to start Spotify login");
+      setSpotifyAuthPending(false);
+    }
   };
 
   useEffect(() => {
@@ -42,12 +79,13 @@ export function useNowPlaying() {
 
         setNowPlaying(nextNowPlaying);
         setError(null);
+        setSpotifyAuthRequired(false);
       } catch (nextError) {
         if (cancelled) {
           return;
         }
 
-        setError(nextError instanceof Error ? nextError.message : "Failed to load now playing");
+        handleRequestError(nextError, "Failed to load now playing");
       } finally {
         if (!cancelled) {
           setLoading(false);
@@ -76,9 +114,10 @@ export function useNowPlaying() {
 
           setNowPlaying(nextNowPlaying);
           setError(null);
+          setSpotifyAuthRequired(false);
         } catch (nextError) {
           if (!cancelled) {
-            setError(nextError instanceof Error ? nextError.message : "Failed to refresh now playing");
+            handleRequestError(nextError, "Failed to refresh now playing");
           }
         }
       })();
@@ -125,7 +164,7 @@ export function useNowPlaying() {
       await action();
       await refreshNowPlaying();
     } catch (nextError) {
-      setError(nextError instanceof Error ? nextError.message : "Transport request failed");
+      handleRequestError(nextError, "Transport request failed");
     } finally {
       setTransportPending(false);
     }
@@ -161,7 +200,10 @@ export function useNowPlaying() {
     nowPlaying: nowPlaying ?? FALLBACK_NOW_PLAYING,
     loading,
     error,
+    spotifyAuthRequired,
+    spotifyAuthPending,
     transportPending,
+    connectSpotify,
     togglePlayback,
     previousTrack,
     nextTrack,

@@ -151,6 +151,41 @@ select {
   font-size: 1rem;
 }
 
+.spotify-login-button {
+  margin-top: 1rem;
+  padding: 0.7rem 1.1rem;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(245, 241, 232, 0.88);
+  color: rgba(12, 17, 16, 0.92);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    background-color 140ms ease,
+    opacity 140ms ease;
+}
+
+.spotify-login-button:hover {
+  background: rgba(245, 241, 232, 0.97);
+}
+
+.spotify-login-button:active {
+  background: rgba(245, 241, 232, 1);
+}
+
+.spotify-login-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.spotify-login-button:focus-visible {
+  outline: 2px solid rgba(245, 241, 232, 0.55);
+  outline-offset: 4px;
+}
+
 .progress-section {
   margin-top: clamp(2rem, 5vw, 3.5rem);
 }
