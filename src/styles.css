@@ -66,7 +66,7 @@ select {
   position: absolute;
   inset: 0;
   background: var(--backdrop-image) center / cover no-repeat;
-  filter: blur(28px) saturate(0.88) contrast(0.96) brightness(0.82);
+  filter: blur(18px) saturate(0.88) contrast(0.96) brightness(0.92);
   opacity: 0.89;
   transform: scale(1.16);
 }
@@ -79,8 +79,8 @@ select {
     radial-gradient(
       circle at center,
       rgba(255, 255, 255, 0.04) 0%,
-      rgba(4, 8, 7, 0.14) 52%,
-      rgba(4, 8, 7, 0.5) 100%
+      rgba(4, 8, 7, 0.14) 32%,
+      rgba(4, 8, 7, 0.5) 90%
     ),
     linear-gradient(180deg, rgba(7, 12, 11, 0.08), rgba(7, 12, 11, 0.52));
 }
