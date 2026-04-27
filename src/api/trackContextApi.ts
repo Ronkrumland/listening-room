@@ -1,8 +1,9 @@
 const API_BASE_URL = import.meta.env.VITE_TRACK_CONTEXT_API_BASE_URL;
+const API_BEARER_TOKEN = import.meta.env.VITE_TRACK_CONTEXT_API_BEARER_TOKEN;
 const TOKEN_STORAGE_KEY = "listening-room-token";
 
 export function getStoredToken(): string | null {
-  return localStorage.getItem(TOKEN_STORAGE_KEY);
+  return API_BEARER_TOKEN || localStorage.getItem(TOKEN_STORAGE_KEY);
 }
 
 function saveToken(token: string): void {
@@ -10,8 +11,8 @@ function saveToken(token: string): void {
 }
 
 export async function validateAndSaveToken(token: string): Promise<void> {
-  // Validate before persisting — only saves if the request succeeds.
-  await request<NowPlayingResponse>("/display/now-playing", undefined, token);
+  // Validate before persisting - only saves if the request succeeds.
+  await request<{ status: string }>("/auth/check", undefined, token);
   saveToken(token);
 }
 
@@ -63,9 +64,18 @@ async function request<T>(path: string, init?: RequestInit, tokenOverride?: stri
   });
 
   if (!response.ok) {
-    throw new Error(
-      `Track Context request failed with status ${response.status}`,
-    );
+    let message = `Track Context request failed with status ${response.status}`;
+
+    try {
+      const body = (await response.json()) as { error?: unknown };
+      if (typeof body.error === "string") {
+        message = body.error;
+      }
+    } catch {
+      // Fall back to the status-based message when the server has no JSON body.
+    }
+
+    throw new Error(message);
   }
 
   if (response.status === 204) {
@@ -107,7 +117,13 @@ function mapNowPlayingResponse(dto: NowPlayingResponse): DisplayNowPlaying {
 
 export const trackContextApi = {
   async getNowPlaying() {
-    const response = await request<NowPlayingResponse>("/display/now-playing");
+    const response = await request<NowPlayingResponse | undefined>(
+      "/display/now-playing",
+    );
+    if (!response) {
+      return null;
+    }
+
     return mapNowPlayingResponse(response);
   },
   play() {
