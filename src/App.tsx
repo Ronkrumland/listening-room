@@ -6,6 +6,12 @@ import { ProgressBar } from "./components/ProgressBar";
 import { SettingsModal } from "./components/SettingsModal";
 import { useControlsVisible } from "./hooks/useControlsVisible";
 import { getStoredToken } from "./api/trackContextApi";
+import {
+  DisplaySettings,
+  getSelectedBackground,
+  getStoredDisplaySettings,
+  saveDisplaySettings,
+} from "./displaySettings";
 import { useNowPlaying } from "./now-playing/useNowPlaying";
 
 const FALLBACK_ALBUM_ART_URL = "/mock-album-art.svg";
@@ -30,14 +36,29 @@ function Player() {
   } = useNowPlaying();
   const controlsVisible = useControlsVisible();
   const [showSettings, setShowSettings] = useState(false);
+  const [displaySettings, setDisplaySettings] = useState(getStoredDisplaySettings);
   const albumArtUrl = nowPlaying.albumArtUrl ?? FALLBACK_ALBUM_ART_URL;
+  const selectedBackground = getSelectedBackground(displaySettings);
+  const backgroundUrl = selectedBackground.imageUrl ?? albumArtUrl;
   const fadeClass = controlsVisible ? "controls-wrap" : "controls-wrap controls-wrap--hidden";
+  const shellClassName = [
+    "app-shell",
+    `app-shell--${displaySettings.viewMode}`,
+    displaySettings.backgroundMotion === "animated" ? "app-shell--animated" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const handleDisplaySettingsChange = (settings: DisplaySettings) => {
+    setDisplaySettings(settings);
+    saveDisplaySettings(settings);
+  };
 
   return (
-    <main className="app-shell">
+    <main className={shellClassName}>
       <div
         className="backdrop"
-        style={{ "--backdrop-image": `url("${albumArtUrl}")` } as React.CSSProperties}
+        style={{ "--backdrop-image": `url("${backgroundUrl}")` } as React.CSSProperties}
         aria-hidden="true"
       />
 
@@ -95,7 +116,13 @@ function Player() {
         </div>
       </section>
 
-      {showSettings && <SettingsModal onClose={() => setShowSettings(false)} />}
+      {showSettings && (
+        <SettingsModal
+          displaySettings={displaySettings}
+          onDisplaySettingsChange={handleDisplaySettingsChange}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
     </main>
   );
 }

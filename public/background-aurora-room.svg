@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="Abstract aurora room background">
+  <defs>
+    <linearGradient id="wall" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#17312d"/>
+      <stop offset="0.48" stop-color="#1c2436"/>
+      <stop offset="1" stop-color="#090d12"/>
+    </linearGradient>
+    <radialGradient id="glowA" cx="28%" cy="18%" r="50%">
+      <stop offset="0" stop-color="#91e6c0" stop-opacity=".72"/>
+      <stop offset=".45" stop-color="#365e76" stop-opacity=".34"/>
+      <stop offset="1" stop-color="#09100f" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowB" cx="76%" cy="22%" r="44%">
+      <stop offset="0" stop-color="#e9b672" stop-opacity=".46"/>
+      <stop offset=".52" stop-color="#7d4966" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#09100f" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#wall)"/>
+  <rect width="1600" height="1000" fill="url(#glowA)"/>
+  <rect width="1600" height="1000" fill="url(#glowB)"/>
+  <path d="M0 665c185-48 337-67 456-57 174 15 249 76 431 72 166-4 311-62 461-47 88 9 172 42 252 99v268H0z" fill="#090d0d" opacity=".64"/>
+  <path d="M83 572c168-64 316-82 445-54 115 24 211 84 328 79 150-6 274-111 443-90 84 10 159 47 225 110" fill="none" stroke="#f5f1e8" stroke-opacity=".08" stroke-width="6"/>
+</svg>

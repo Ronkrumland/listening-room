@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" role="img" aria-label="Listening booth background">
+  <defs>
+    <linearGradient id="room" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#251d18"/>
+      <stop offset=".5" stop-color="#142323"/>
+      <stop offset="1" stop-color="#070b0b"/>
+    </linearGradient>
+    <radialGradient id="lamp" cx="50%" cy="19%" r="43%">
+      <stop offset="0" stop-color="#ffd99a" stop-opacity=".56"/>
+      <stop offset=".42" stop-color="#b78254" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#070b0b" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#room)"/>
+  <rect width="1600" height="1000" fill="url(#lamp)"/>
+  <g opacity=".2">
+    <rect x="110" y="130" width="210" height="740" rx="10" fill="#f5f1e8"/>
+    <rect x="380" y="130" width="210" height="740" rx="10" fill="#f5f1e8"/>
+    <rect x="1010" y="130" width="210" height="740" rx="10" fill="#f5f1e8"/>
+    <rect x="1280" y="130" width="210" height="740" rx="10" fill="#f5f1e8"/>
+  </g>
+  <path d="M0 718h1600v282H0z" fill="#080c0b" opacity=".75"/>
+  <path d="M520 678h560v42H520z" fill="#f5f1e8" opacity=".1"/>
+  <circle cx="800" cy="368" r="116" fill="#0a0f0f" opacity=".58"/>
+  <circle cx="800" cy="368" r="82" fill="#f5f1e8" opacity=".09"/>
+</svg>
